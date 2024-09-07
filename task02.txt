@@ -1,0 +1,39 @@
+faqs = {
+    "What is your return policy?": "Our return policy allows you to return items within 30 days of purchase with a valid receipt.",
+    "How can I track my order?": "You can track your order using the tracking number provided in the confirmation email.",
+    "Do you ship internationally?": "Yes, we ship to many countries around the world. Shipping fees and delivery times vary depending on the destination.",
+    "How can I contact customer service?": "You can contact customer service via email at support@example.com or call us at 1-800-123-4567.",
+}
+import spacy
+
+# Load the small English model
+nlp = spacy.load("en_core_web_sm")
+
+# Define some FAQs
+faq = {
+    "What is your return policy?": "You can return any item within 30 days of purchase for a full refund.",
+    "How can I contact support?": "You can contact support by emailing support@example.com or calling 1-800-123-4567.",
+    "Where are you located?": "We are located at 123 Main St, Anytown, USA.",
+    "What are your business hours?": "We are open Monday through Friday from 9 AM to 5 PM."
+}
+
+def find_best_answer(user_query):
+    user_query_doc = nlp(user_query)
+    best_match = None
+    best_similarity = 0
+
+    for question, answer in faq.items():
+        faq_doc = nlp(question)
+        similarity = user_query_doc.similarity(faq_doc)
+
+        if similarity > best_similarity:
+            best_similarity = similarity
+            best_match = answer
+
+    return best_match if best_match else "Sorry, I couldn't find an answer to your question."
+
+# Example usage
+if __name__ == "__main__":
+    user_query = input("You: ")
+    response = find_best_answer(user_query)
+    print(f"Chatbot: {response}")
